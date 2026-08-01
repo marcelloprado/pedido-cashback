@@ -1,0 +1,406 @@
+{
+  "name": "Cadastro Cliente + Transação (Fillout → Supabase)",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "name",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "name",
+          "value": "clientes"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "cpf",
+              "value": "={{ $json.body.cpf }}"
+            }
+          ]
+        },
+        "sort": {
+          "values": []
+        },
+        "options": {}
+      },
+      "id": "a66f3e09-1225-4e08-9d62-c93e4b78fb13",
+      "name": "Buscar Cliente",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        192,
+        -16
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "omVDBE6UPsq4EHVi",
+          "name": "HashFood Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "has-id",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a32491f5-23f8-4fad-ad20-c7a6350d14c6",
+      "name": "Cliente Existe?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        384,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Normaliza os dados vindos do formulário + o cliente (existente ou recém-criado)\nconst webhook = $('Webhook').item.json;\nconst wh = webhook.body ?? webhook;\n\n// id do cliente: se veio do \"Buscar Cliente\" (true) ou do \"Criar Cliente\" (false)\nconst clienteId = $json.id ?? wh.cliente_id ?? null;\n\nconst valorRaw = String(wh.valor ?? wh.amount ?? '0');\nconst valor = Number(valorRaw.replace(/[^0-9.,-]/g, '').replace(/\\.(?=\\d{3}(\\D|$))/g, '').replace(',', '.')) || 0;\n\nreturn {\n  json: {\n    cliente_id: clienteId,\n    nome: (wh.nome ?? '').trim(),\n    email: (wh.email ?? '').trim().toLowerCase(),\n    telefone: String(wh.telefone ?? '').replace(/\\D/g, ''),\n    valor,\n   descricao: `Compra de ${wh.produto}`,\n    criado_em: new Date().toISOString(),\n  },\n};"
+      },
+      "id": "4995dc8e-0c19-4e67-8e07-b7ce87e04306",
+      "name": "Normalização",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        752,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "name",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "name",
+          "value": "transacoes"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "cliente_id": "={{ $json.cliente_id }}",
+            "valor": "={{ $json.valor }}",
+            "descricao": "={{ $json.descricao }}",
+            "tipo": "compras"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cliente_id",
+              "displayName": "cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "valor",
+              "displayName": "valor",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "tipo",
+              "displayName": "tipo",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "descricao",
+              "displayName": "descricao",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "1d13ec52-5e66-4e85-b798-23877ad2a889",
+      "name": "Inserir Transação",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        928,
+        -48
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "omVDBE6UPsq4EHVi",
+          "name": "HashFood Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "name",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "name",
+          "value": "clientes"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "nome": "={{ $(\"Webhook\").item.json.body.nome }}",
+            "email": "={{ $(\"Webhook\").item.json.body.email }}",
+            "saldo": "={{ 0 }}",
+            "cpf": "={{ $(\"Webhook\").item.json.body.cpf }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cpf",
+              "displayName": "cpf",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "saldo",
+              "displayName": "saldo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "fc170faa-2781-421b-a8d4-924cb0ccedb9",
+      "name": "Criar Cliente",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        592,
+        64
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "omVDBE6UPsq4EHVi",
+          "name": "HashFood Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "form_proprio-cliente",
+        "options": {}
+      },
+      "id": "6451c478-d9dd-4936-b1a0-23b94a7bb250",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -32,
+        -16
+      ],
+      "webhookId": "e2ceb25c-3817-471e-ba0a-5556530c30a0"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Buscar Cliente": {
+      "main": [
+        [
+          {
+            "node": "Cliente Existe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cliente Existe?": {
+      "main": [
+        [
+          {
+            "node": "Normalização",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Criar Cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalização": {
+      "main": [
+        [
+          {
+            "node": "Inserir Transação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Cliente": {
+      "main": [
+        [
+          {
+            "node": "Normalização",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Buscar Cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7818b761-5750-4d49-b5ac-6fa22f32fc18",
+  "meta": {
+    "instanceId": "20ff1953d52f41c0dc77176e94798dfa976d7a35bcbc1e4da513c947db8b1075"
+  },
+  "nodeGroups": [],
+  "id": "AEAiOGnCNukxuk1o",
+  "tags": []
+}

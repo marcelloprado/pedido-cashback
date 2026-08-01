@@ -1,0 +1,399 @@
+{
+  "info": {
+    "_postman_id": "c876bfb0-91fd-431c-bcb7-04bd4bbab394",
+    "name": "HashFood",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56418731",
+    "_collection_link": "https://go.postman.co/collection/56418731-c876bfb0-91fd-431c-bcb7-04bd4bbab394?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Autenticação",
+      "item": [
+        {
+          "name": "Storage",
+          "item": [
+            {
+              "name": "new request",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "apikey",
+                    "value": "{{anon_key}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{client_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "file",
+                  "file": {
+                    "src": "postman-cloud:///1f189a17-9546-44f0-8dbf-7e3fcb27d17e"
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/storage/v1/object/Avatars/8a4e09de-4eff-475e-ac4d-ae5406f19893/Gemini_Generated_Image-marcello-kkkkk.png",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "storage",
+                    "v1",
+                    "object",
+                    "Avatars",
+                    "8a4e09de-4eff-475e-ac4d-ae5406f19893",
+                    "Gemini_Generated_Image-marcello-kkkkk.png"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "LoginCliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{anon_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"marcello@teste.com\",\r\n  \"password\": \"teste123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://aayycglevbjskcwrooqz.supabase.co/auth/v1/token?grant_type=password",
+              "protocol": "https",
+              "host": [
+                "aayycglevbjskcwrooqz",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "auth",
+                "v1",
+                "token"
+              ],
+              "query": [
+                {
+                  "key": "grant_type",
+                  "value": "password"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "LoginFuncionario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{anon_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"camila@hashcash.com\",\r\n  \"password\": \"teste123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://aayycglevbjskcwrooqz.supabase.co/auth/v1/token?grant_type=password",
+              "protocol": "https",
+              "host": [
+                "aayycglevbjskcwrooqz",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "auth",
+                "v1",
+                "token"
+              ],
+              "query": [
+                {
+                  "key": "grant_type",
+                  "value": "password"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "RefreshToken",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{anon_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"refresh_token\": \"{{client_refresh_token}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://aayycglevbjskcwrooqz.supabase.co/auth/v1/token?grant_type=refresh_token",
+              "protocol": "https",
+              "host": [
+                "aayycglevbjskcwrooqz",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "auth",
+                "v1",
+                "token"
+              ],
+              "query": [
+                {
+                  "key": "grant_type",
+                  "value": "refresh_token"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "RLS",
+      "item": [
+        {
+          "name": "BuscarClientes(Cliente)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{anon_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{client_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/clientes?select=*",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "clientes"
+              ],
+              "query": [
+                {
+                  "key": "select",
+                  "value": "*"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BuscarTransacoes(Cliente)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{anon_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{client_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/transacoes?select=*",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "transacoes"
+              ],
+              "query": [
+                {
+                  "key": "select",
+                  "value": "*"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [
+          "// ===== Collection-level test script =====",
+          "// These assertions run after EVERY request in the collection.",
+          "// Request-specific logic is gated by request name.",
+          "",
+          "const requestName = pm.info.requestName;",
+          "",
+          "// --- UploadAvatar assertions ---",
+          "if (requestName === \"UploadAvatar\") {",
+          "    pm.test(\"Upload: status is 200\", function () {",
+          "        pm.response.to.have.status(200);",
+          "    });",
+          "",
+          "    pm.test(\"Upload: response is JSON\", function () {",
+          "        pm.response.to.be.json;",
+          "    });",
+          "",
+          "    pm.test(\"Upload: response contains 'Key' field\", function () {",
+          "        const json = pm.response.json();",
+          "        pm.expect(json).to.have.property(\"Key\");",
+          "        pm.expect(json.Key).to.be.a(\"string\").and.not.empty;",
+          "    });",
+          "",
+          "    pm.test(\"Upload: response contains 'Id' field\", function () {",
+          "        const json = pm.response.json();",
+          "        pm.expect(json).to.have.property(\"Id\");",
+          "    });",
+          "",
+          "    // Persist the uploaded filename for the DELETE request",
+          "    const json = pm.response.json();",
+          "    if (json && json.Key) {",
+          "        // Key is like \"Avatars/test-avatar-123.jpg\" — extract just the filename part",
+          "        const parts = json.Key.split(\"/\");",
+          "        const filename = parts[parts.length - 1];",
+          "        pm.collectionVariables.set(\"upload_filename\", filename);",
+          "        pm.collectionVariables.set(\"uploaded_key\", json.Key);",
+          "    }",
+          "}",
+          "",
+          "// --- DeleteAvatar assertions ---",
+          "if (requestName === \"DeleteAvatar\") {",
+          "    pm.test(\"Delete: status is 200\", function () {",
+          "        pm.response.to.have.status(200);",
+          "    });",
+          "",
+          "    pm.test(\"Delete: response is JSON\", function () {",
+          "        pm.response.to.be.json;",
+          "    });",
+          "",
+          "    pm.test(\"Delete: response is an array (deleted objects list)\", function () {",
+          "        const json = pm.response.json();",
+          "        pm.expect(json).to.be.an(\"array\");",
+          "    });",
+          "",
+          "    pm.test(\"Delete: deleted array is not empty\", function () {",
+          "        const json = pm.response.json();",
+          "        pm.expect(json.length).to.be.greaterThan(0);",
+          "    });",
+          "",
+          "    pm.test(\"Delete: deleted object has 'name' field\", function () {",
+          "        const json = pm.response.json();",
+          "        pm.expect(json[0]).to.have.property(\"name\");",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": ""
+    },
+    {
+      "key": "anon_key",
+      "value": ""
+    },
+    {
+      "key": "client_token",
+      "value": ""
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    },
+    {
+      "key": "client_refresh_token",
+      "value": ""
+    },
+    {
+      "key": "admin_refresh_token",
+      "value": ""
+    },
+    {
+      "key": "upload_filename",
+      "value": ""
+    }
+  ]
+}
