@@ -38,12 +38,23 @@ document
         console.log("Data valor:", produtoSelecionado.dataset.valor);
 
         console.log(dados);
+        //^====================================================
+        // Versão 1 - n8n
+        // Defina a URL do seu webhook do n8n
+        //~ const WEBHOOK_URL = "COLOQUE_AQUI_SUA_URL_DO_WEBHOOK";
+        //^====================================================
 
-       // Defina a URL do seu webhook do n8n
-       const WEBHOOK_URL = "COLOQUE_AQUI_SUA_URL_DO_WEBHOOK";
+        //^====================================================
+        // Versão 2 - FastAPI
+        // Defina a URL do seu endpoint FastAPI
+        //~ const API_URL = "http://localhost:8000/pedido";
+        //^====================================================
+
+        //! Altere apenas esta linha conforme a versão utilizada (n8n ou FastAPI)
+        const API_URL = "http://localhost:8000/pedido"; // Para FastAPI
 
         try {
-            const resposta = await fetch(WEBHOOK_URL, {
+            const resposta = await fetch(API_URL, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
