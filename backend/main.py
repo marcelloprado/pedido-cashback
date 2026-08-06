@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from schemas import Pedido
+from services import processar_pedido
+
 
 app = FastAPI(
     title= "Pedido Cashback API",
@@ -21,4 +24,11 @@ def home():
         "status": "online",
         "mensagem": "API de pedidos de cashback está online!"
     }
+    
+@app.post("/pedido")
+def criar_pedido(pedido: Pedido):
+    
+    return processar_pedido(pedido)
+    
+    
     

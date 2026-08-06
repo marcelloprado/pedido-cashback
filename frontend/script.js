@@ -50,8 +50,8 @@ document
         //~ const API_URL = "http://localhost:8000/pedido";
         //^====================================================
 
-        //! Altere apenas esta linha conforme a versão utilizada (n8n ou FastAPI)
-        const API_URL = "http://localhost:8000/pedido"; // Para FastAPI
+        //^ Altere apenas esta linha conforme a versão utilizada (n8n ou FastAPI)
+        const API_URL = "http://127.0.0.1:8000/pedido";  // Para FastAPI
 
         try {
             const resposta = await fetch(API_URL, {
